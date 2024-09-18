@@ -53,6 +53,9 @@ class MRIConfig(Config):
     VALIDATION_STEPS = 5
     USE_MINI_MASK = False
 
+    DETECTION_MAX_INSTANCES = 4
+    DETECTION_NMS_THRESHOLD = 0.6
+
 config = MRIConfig()
 config.display()
 
@@ -134,24 +137,29 @@ dataset_val = MRI_Dataset()
 dataset_val.load_images("placenta_mri", test_dict, 'bladder', 'placenta', 'placenta_accreta', 'uterine_myometrium')
 dataset_val.prepare()
 
+# Create model in training mode
+model = modellib.MaskRCNN(mode="training", config=config,
+                          model_dir=MODEL_DIR)
+
 # Load and display random samples
 # Load and display random samples using image IDs
 image_ids = np.random.choice(dataset_train.image_ids, 4)
 for image_id in image_ids:
     mask, class_ids = dataset_train.load_mask(image_id)
     img = dataset_train.load_image(image_id)[0]  # Load the actual image using the image ID
-    visualize.display_top_masks(img, mask, class_ids, dataset_train.class_names)
+    gt_plt_train = visualize.display_top_masks(img, mask, class_ids, dataset_train.class_names)
+    gt_plt_path=os.path.join(config.CHECKPOINT_PATH, "examples", str(image_id)+"gt")
+    gt_plt_train.savefig(gt_plt_path)
 
 # Load and display random samples
 image_ids = np.random.choice(dataset_val.image_ids, 4)
 for image_id in image_ids:
-    mask, class_ids = dataset_train.load_mask(image_id)
-    img = dataset_train.load_image(image_id)[0]  # Load the actual image using the image ID
+    mask, class_ids = dataset_val.load_mask(image_id)
+    img = dataset_val.load_image(image_id)[0]  # Load the actual image using the image ID
     visualize.display_top_masks(img, mask, class_ids, dataset_val.class_names)
-
-# Create model in training mode
-model = modellib.MaskRCNN(mode="training", config=config,
-                          model_dir=MODEL_DIR)
+    gt_plt_test = visualize.display_top_masks(img, mask, class_ids, dataset_train.class_names)
+    gt_plt_path=os.path.join(config.CHECKPOINT_PATH, "examples", str(image_id)+"gt")
+    gt_plt_test.savefig(gt_plt_path)
 
 # Which weights to start with?
 init_with = "last"  # imagenet, coco, or last

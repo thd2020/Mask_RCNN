@@ -2286,6 +2286,11 @@ class MaskRCNN(object):
         self.model_path = os.path.join(self.log_dir, "models")
         self.example_path = os.path.join(self.log_dir, "examples")
 
+        # Create log_dir if it does not exist
+        if not os.path.exists(self.log_dir):
+            os.makedirs(self.log_dir)
+            os.mkdir(self.example_path)
+
     def train(self, train_dataset, val_dataset, learning_rate, epochs, layers,
               augmentation=None, custom_callbacks=None, config=None, no_augmentation_sources=None):
         """Train the model.
@@ -2342,10 +2347,8 @@ class MaskRCNN(object):
         val_generator = DataGenerator(val_dataset, self.config, shuffle=True)
 
         # Create log_dir if it does not exist
-        if not os.path.exists(self.log_dir):
-            os.makedirs(self.log_dir)
-            os.mkdir(self.model_path)
-            os.mkdir(self.example_path)
+        if not os.path.exists(self.model_path):
+            os.makedirs(self.model_path)
 
         # Callbacks
         callbacks = [
