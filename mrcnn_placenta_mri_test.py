@@ -53,6 +53,9 @@ class MRIConfig(Config):
     VALIDATION_STEPS = 5
     USE_MINI_MASK = False
 
+    DETECTION_MAX_INSTANCES = 4
+    DETECTION_NMS_THRESHOLD = 0.6
+
 config = MRIConfig()
 config.display()
 
@@ -124,52 +127,15 @@ class MRI_Dataset(utils.Dataset):
         
         return mask.astype(np.bool_), class_ids.astype(np.int32)
 
-# Training dataset
-dataset_train = MRI_Dataset()
-dataset_train.load_images("placenta_mri", train_dict, 'bladder', 'placenta', 'placenta_accreta', 'uterine_myometrium')
-dataset_train.prepare()
+
 
 # Validation dataset
 dataset_val = MRI_Dataset()
 dataset_val.load_images("placenta_mri", test_dict, 'bladder', 'placenta', 'placenta_accreta', 'uterine_myometrium')
 dataset_val.prepare()
 
-# Load and display random samples
-# Load and display random samples using image IDs
-# image_ids = np.random.choice(dataset_train.image_ids, 4)
-# for image_id in image_ids:
-#     mask, class_ids = dataset_train.load_mask(image_id)
-#     img = dataset_train.load_image(image_id)[0]  # Load the actual image using the image ID
-#     visualize.display_top_masks(img, mask, class_ids, dataset_train.class_names)
-
-# # Load and display random samples
-# image_ids = np.random.choice(dataset_val.image_ids, 4)
-# for image_id in image_ids:
-#     mask, class_ids = dataset_train.load_mask(image_id)
-#     img = dataset_train.load_image(image_id)[0]  # Load the actual image using the image ID
-#     visualize.display_top_masks(img, mask, class_ids, dataset_val.class_names)
-
-# Create model in training mode
-model = modellib.MaskRCNN(mode="training", config=config,
-                          model_dir=MODEL_DIR)
-
 # Which weights to start with?
 init_with = "last"  # imagenet, coco, or last
-
-if init_with == "imagenet":
-    model.load_weights(model.get_imagenet_weights(), by_name=True)
-elif init_with == "coco":
-    # Load weights trained on MS COCO, but skip layers that
-    # are different due to the different number of classes
-    # See README for instructions to download the COCO weights
-    model.load_weights(COCO_MODEL_PATH, by_name=True,
-                       exclude=["mrcnn_class_logits", "mrcnn_bbox_fc",
-                                "mrcnn_bbox", "mrcnn_mask"])
-elif init_with == "last":
-    # Load the last model you trained and continue training
-    model.load_weights(model.find_last(), by_name=True,
-                       exclude=["mrcnn_class_logits", "mrcnn_bbox_fc",
-                                "mrcnn_bbox", "mrcnn_mask"])
 
 class InferenceConfig(MRIConfig):
     GPU_COUNT = 1
@@ -214,7 +180,7 @@ for tests in range(0, 5):
         os.makedirs(example_path)
 
     gt_plt = visualize.display_instances(original_image, gt_bbox, gt_mask, gt_class_id,
-                                dataset_train.class_names, figsize=(8, 8))
+                                dataset_val.class_names, figsize=(8, 8))
     gt_plt_path=os.path.join(config.CHECKPOINT_PATH, "examples", str(image_id)+"gt")
     gt_plt.savefig(gt_plt_path)
 
