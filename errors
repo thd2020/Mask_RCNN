@@ -1,0 +1,17 @@
+Loading weights from  /home/lmj/xyx/Mask_RCNN/logs/placenta20240529T1137/models/mask_rcnn_placenta_0010.h5
+original_image           shape: (128, 128, 3)         min:    0.00000  max:  255.00000  uint8
+image_meta               shape: (16,)                 min:    0.00000  max:  581.00000  float64
+gt_class_id              shape: (1, 1)                min:    2.00000  max:    2.00000  int32
+gt_bbox                  shape: (3, 4)                min:   27.00000  max:  119.00000  int32
+gt_mask                  shape: (56, 56, 3)           min:    0.00000  max:    1.00000  bool
+python-BaseException
+Traceback (most recent call last):
+  File "/snap/pycharm-professional/387/plugins/python/helpers/pydev/pydevd.py", line 1535, in _exec
+    pydev_imports.execfile(file, globals, locals)  # execute the script
+  File "/snap/pycharm-professional/387/plugins/python/helpers/pydev/_pydev_imps/_pydev_execfile.py", line 18, in execfile
+    exec(compile(contents+"\n", file, 'exec'), glob, loc)
+  File "/home/lmj/xyx/Mask_RCNN/mrcnn_placenta.py", line 304, in <module>
+    visualize.display_instances(original_image, gt_bbox, gt_mask, gt_class_id,
+  File "/home/lmj/xyx/Mask_RCNN/mrcnn/visualize.py", line 105, in display_instances
+    assert boxes.shape[0] == masks.shape[-1] == class_ids.shape[0]
+AssertionError

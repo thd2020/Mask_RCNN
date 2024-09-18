@@ -13,6 +13,8 @@ import re
 import math
 from collections import OrderedDict
 import multiprocessing
+
+import cv2
 import numpy as np
 import tensorflow as tf
 import tensorflow.keras as keras
@@ -1231,7 +1233,7 @@ def load_image_gt(dataset, config, image_id, augmentation=None):
         defined in MINI_MASK_SHAPE.
     """
     # Load image and mask
-    image = dataset.load_image(image_id)
+    image, image_path = dataset.load_image(image_id)
     mask, class_ids = dataset.load_mask(image_id)
     original_shape = image.shape
     image, window, scale, padding, crop = utils.resize_image(
@@ -2082,9 +2084,9 @@ class MaskRCNN(object):
         Returns:
             The path of the last checkpoint file
         """
-        # Get directory names. Each directory corresponds to a model
         dir_names = next(os.walk(self.model_dir))[1]
-        key = self.config.NAME.lower()
+        # key = self.config.NAME.lower()
+        key = "mri"
         dir_names = filter(lambda f: f.startswith(key), dir_names)
         dir_names = sorted(dir_names)
         if not dir_names:
@@ -2092,17 +2094,21 @@ class MaskRCNN(object):
             raise FileNotFoundError(
                 errno.ENOENT,
                 "Could not find model directory under {}".format(self.model_dir))
-        # Pick last directory
-        dir_name = os.path.join(self.model_dir, dir_names[-1])
-        # Find the last checkpoint
-        checkpoints = next(os.walk(dir_name))[2]
+        dir_name = dir_names[-1]
+        model_path = os.path.join(self.model_dir, dir_name, "models")
+        dir_index = dir_names.index(dir_name)
+        while not os.path.exists(model_path):
+            dir_index = dir_index - 1;
+            model_path = os.path.join(self.model_dir, dir_names[dir_index], "models")
+            
+        checkpoints = next(os.walk(model_path))[2]
         checkpoints = filter(lambda f: f.startswith("mask_rcnn"), checkpoints)
         checkpoints = sorted(checkpoints)
         if not checkpoints:
             import errno
             raise FileNotFoundError(
-                errno.ENOENT, "Could not find weight files in {}".format(dir_name))
-        checkpoint = os.path.join(dir_name, checkpoints[-1])
+                errno.ENOENT, "Could not find weight files in {}".format(model_path))
+        checkpoint = os.path.join(model_path, checkpoints[-1])
         return checkpoint
 
     def load_weights(self, filepath, by_name=False, exclude=None):
@@ -2271,13 +2277,17 @@ class MaskRCNN(object):
             self.config.NAME.lower(), now))
 
         # Path to save after each epoch. Include placeholders that get filled by Keras.
-        self.checkpoint_path = os.path.join(self.log_dir, "mask_rcnn_{}_*epoch*.h5".format(
+
+        self.checkpoint_path = os.path.join(self.log_dir, "models/mask_rcnn_{}_*epoch*.h5".format(
             self.config.NAME.lower()))
         self.checkpoint_path = self.checkpoint_path.replace(
             "*epoch*", "{epoch:04d}")
+        self.config.CHECKPOINT_PATH=self.log_dir
+        self.model_path = os.path.join(self.log_dir, "models")
+        self.example_path = os.path.join(self.log_dir, "examples")
 
     def train(self, train_dataset, val_dataset, learning_rate, epochs, layers,
-              augmentation=None, custom_callbacks=None, no_augmentation_sources=None):
+              augmentation=None, custom_callbacks=None, config=None, no_augmentation_sources=None):
         """Train the model.
         train_dataset, val_dataset: Training and validation Dataset objects.
         learning_rate: The learning rate to train with
@@ -2334,6 +2344,8 @@ class MaskRCNN(object):
         # Create log_dir if it does not exist
         if not os.path.exists(self.log_dir):
             os.makedirs(self.log_dir)
+            os.mkdir(self.model_path)
+            os.mkdir(self.example_path)
 
         # Callbacks
         callbacks = [
@@ -2370,8 +2382,8 @@ class MaskRCNN(object):
             validation_data=val_generator,
             validation_steps=self.config.VALIDATION_STEPS,
             max_queue_size=100,
-            workers=workers,
-            use_multiprocessing=workers > 1,
+            workers=1,
+            use_multiprocessing=False,
         )
         self.epoch = max(self.epoch, epochs)
 

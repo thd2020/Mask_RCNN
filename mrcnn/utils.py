@@ -21,6 +21,7 @@ import skimage.transform
 import urllib.request
 import shutil
 import warnings
+import cv2
 from distutils.version import LooseVersion
 
 # URL from which to download the latest COCO trained weights
@@ -274,10 +275,16 @@ class Dataset(object):
         })
 
     def add_image(self, source, image_id, path, **kwargs):
+        image = cv2.imread(path)
+        height, width = image.shape[:2]
+        
+        # Add image info including dimensions
         image_info = {
             "id": image_id,
             "source": source,
             "path": path,
+            "height": height,
+            "width": width
         }
         image_info.update(kwargs)
         self.image_info.append(image_info)
@@ -357,13 +364,14 @@ class Dataset(object):
         """
         # Load image
         image = skimage.io.imread(self.image_info[image_id]['path'])
+        image_path = self.image_info[image_id]['path']
         # If grayscale. Convert to RGB for consistency.
         if image.ndim != 3:
             image = skimage.color.gray2rgb(image)
         # If has an alpha channel, remove it for consistency
         if image.shape[-1] == 4:
             image = image[..., :3]
-        return image
+        return image, image_path
 
     def load_mask(self, image_id):
         """Load instance masks for the given image.

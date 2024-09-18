@@ -1,0 +1,116 @@
+{
+    "data/testing/images/20220513003495_30_29.png": [
+        "data/testing/masks/20220513003495_30_29_bladder.png",
+        "data/testing/masks/20220513003495_30_29_placenta.png",
+        "data/testing/masks/20220513003495_30_29_placenta_accreta.png",
+        "data/testing/masks/20220513003495_30_29_uterine_myometrium.png"
+    ],
+    "data/testing/images/20220627000827_18_17.png": [
+        "data/testing/masks/20220627000827_18_17_bladder.png",
+        "data/testing/masks/20220627000827_18_17_placenta.png",
+        "data/testing/masks/20220627000827_18_17_placenta_accreta.png",
+        "data/testing/masks/20220627000827_18_17_uterine_myometrium.png"
+    ],
+    "data/testing/images/20220627000827_19_18.png": [
+        "data/testing/masks/20220627000827_19_18_bladder.png",
+        "data/testing/masks/20220627000827_19_18_placenta.png",
+        "data/testing/masks/20220627000827_19_18_placenta_accreta.png",
+        "data/testing/masks/20220627000827_19_18_uterine_myometrium.png"
+    ],
+    "data/testing/images/20220627000827_16_15.png": [
+        "data/testing/masks/20220627000827_16_15_bladder.png",
+        "data/testing/masks/20220627000827_16_15_placenta.png",
+        "data/testing/masks/20220627000827_16_15_placenta_accreta.png",
+        "data/testing/masks/20220627000827_16_15_uterine_myometrium.png"
+    ],
+    "data/testing/images/20220513003495_21_20.png": [
+        "data/testing/masks/20220513003495_21_20_bladder.png",
+        "data/testing/masks/20220513003495_21_20_placenta.png",
+        "data/testing/masks/20220513003495_21_20_placenta_accreta.png",
+        "data/testing/masks/20220513003495_21_20_uterine_myometrium.png"
+    ],
+    "data/testing/images/20220627000827_25_24.png": [
+        "data/testing/masks/20220627000827_25_24_bladder.png",
+        "data/testing/masks/20220627000827_25_24_placenta.png",
+        "data/testing/masks/20220627000827_25_24_placenta_accreta.png",
+        "data/testing/masks/20220627000827_25_24_uterine_myometrium.png"
+    ],
+    "data/testing/images/20220627000827_30_29.png": [
+        "data/testing/masks/20220627000827_30_29_bladder.png",
+        "data/testing/masks/20220627000827_30_29_placenta.png",
+        "data/testing/masks/20220627000827_30_29_placenta_accreta.png",
+        "data/testing/masks/20220627000827_30_29_uterine_myometrium.png"
+    ],
+    "data/testing/images/20220513003495_26_25.png": [
+        "data/testing/masks/20220513003495_26_25_bladder.png",
+        "data/testing/masks/20220513003495_26_25_placenta.png",
+        "data/testing/masks/20220513003495_26_25_placenta_accreta.png",
+        "data/testing/masks/20220513003495_26_25_uterine_myometrium.png"
+    ],
+    "data/testing/images/20220513003495_24_23.png": [
+        "data/testing/masks/20220513003495_24_23_bladder.png",
+        "data/testing/masks/20220513003495_24_23_placenta.png",
+        "data/testing/masks/20220513003495_24_23_placenta_accreta.png",
+        "data/testing/masks/20220513003495_24_23_uterine_myometrium.png"
+    ],
+    "data/testing/images/20220513003495_29_28.png": [
+        "data/testing/masks/20220513003495_29_28_bladder.png",
+        "data/testing/masks/20220513003495_29_28_placenta.png",
+        "data/testing/masks/20220513003495_29_28_placenta_accreta.png",
+        "data/testing/masks/20220513003495_29_28_uterine_myometrium.png"
+    ],
+    "data/testing/images/20220627000827_24_23.png": [
+        "data/testing/masks/20220627000827_24_23_bladder.png",
+        "data/testing/masks/20220627000827_24_23_placenta.png",
+        "data/testing/masks/20220627000827_24_23_placenta_accreta.png",
+        "data/testing/masks/20220627000827_24_23_uterine_myometrium.png"
+    ],
+    "data/testing/images/20220513003495_28_27.png": [
+        "data/testing/masks/20220513003495_28_27_bladder.png",
+        "data/testing/masks/20220513003495_28_27_placenta.png",
+        "data/testing/masks/20220513003495_28_27_placenta_accreta.png",
+        "data/testing/masks/20220513003495_28_27_uterine_myometrium.png"
+    ],
+    "data/testing/images/20220627000827_17_16.png": [
+        "data/testing/masks/20220627000827_17_16_bladder.png",
+        "data/testing/masks/20220627000827_17_16_placenta.png",
+        "data/testing/masks/20220627000827_17_16_placenta_accreta.png",
+        "data/testing/masks/20220627000827_17_16_uterine_myometrium.png"
+    ],
+    "data/testing/images/20220513003495_31_30.png": [
+        "data/testing/masks/20220513003495_31_30_bladder.png",
+        "data/testing/masks/20220513003495_31_30_placenta.png",
+        "data/testing/masks/20220513003495_31_30_placenta_accreta.png",
+        "data/testing/masks/20220513003495_31_30_uterine_myometrium.png"
+    ],
+    "data/testing/images/20220513003495_27_26.png": [
+        "data/testing/masks/20220513003495_27_26_bladder.png",
+        "data/testing/masks/20220513003495_27_26_placenta.png",
+        "data/testing/masks/20220513003495_27_26_placenta_accreta.png",
+        "data/testing/masks/20220513003495_27_26_uterine_myometrium.png"
+    ],
+    "data/testing/images/20220513003495_25_24.png": [
+        "data/testing/masks/20220513003495_25_24_bladder.png",
+        "data/testing/masks/20220513003495_25_24_placenta.png",
+        "data/testing/masks/20220513003495_25_24_placenta_accreta.png",
+        "data/testing/masks/20220513003495_25_24_uterine_myometrium.png"
+    ],
+    "data/testing/images/20220513003495_23_22.png": [
+        "data/testing/masks/20220513003495_23_22_bladder.png",
+        "data/testing/masks/20220513003495_23_22_placenta.png",
+        "data/testing/masks/20220513003495_23_22_placenta_accreta.png",
+        "data/testing/masks/20220513003495_23_22_uterine_myometrium.png"
+    ],
+    "data/testing/images/20220513003495_33_32.png": [
+        "data/testing/masks/20220513003495_33_32_bladder.png",
+        "data/testing/masks/20220513003495_33_32_placenta.png",
+        "data/testing/masks/20220513003495_33_32_placenta_accreta.png",
+        "data/testing/masks/20220513003495_33_32_uterine_myometrium.png"
+    ],
+    "data/testing/images/20220513003495_22_21.png": [
+        "data/testing/masks/20220513003495_22_21_bladder.png",
+        "data/testing/masks/20220513003495_22_21_placenta.png",
+        "data/testing/masks/20220513003495_22_21_placenta_accreta.png",
+        "data/testing/masks/20220513003495_22_21_uterine_myometrium.png"
+    ]
+}

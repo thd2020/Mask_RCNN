@@ -188,18 +188,18 @@ dataset_val.load_images("placenta", rc_test_dict, "normal", "accreta", "increta"
 dataset_val.prepare()
 
 # Load and display random samples
-imgs = np.random.choice(list(train_dict.keys()), 4)
-for img in imgs:
-    mask, class_ids = dataset_train.load_mask(img)
-    img = cv2.imread(img)
-    visualize.display_top_masks(img, mask, class_ids, dataset_train.class_names)
-
-# Load and display random samples
-imgs = np.random.choice(list(rc_test_dict.keys()), 4)
-for img in imgs:
-    mask, class_ids = dataset_val.load_mask(img)
-    img = cv2.imread(img)
-    visualize.display_top_masks(img, mask, class_ids, dataset_val.class_names)
+# imgs = np.random.choice(list(train_dict.keys()), 4)
+# for img in imgs:
+#     mask, class_ids = dataset_train.load_mask(img)
+#     img = cv2.imread(img)
+#     visualize.display_top_masks(img, mask, class_ids, dataset_train.class_names)
+#
+# # Load and display random samples
+# imgs = np.random.choice(list(rc_test_dict.keys()), 4)
+# for img in imgs:
+#     mask, class_ids = dataset_val.load_mask(img)
+#     img = cv2.imread(img)
+#     visualize.display_top_masks(img, mask, class_ids, dataset_val.class_names)
 
 # Create model in training mode
 model = modellib.MaskRCNN(mode="training", config=config,
@@ -221,38 +221,6 @@ elif init_with == "last":
     # Load the last model you trained and continue training
     model.load_weights(model.find_last(), by_name=True)
 
-# ## Training
-# 
-# Train in two stages:
-# 1. Only the heads. Here we're freezing all the backbone layers and training only the randomly initialized layers (i.e. the ones that we didn't use pre-trained weights from MS COCO). To train only the head layers, pass `layers='heads'` to the `train()` function.
-# 
-# 2. Fine-tune all layers. For this simple example it's not necessary, but we're including it to show the process. Simply pass `layers="all` to train all layers.
-
-print("Train items: ", len(train_dict), "; Val items: ", len(rc_test_dict), "; all itmes: ", len(all_dict))
-
-# Train the head branches
-# Passing layers="heads" freezes all layers except the head
-# layers. You can also pass a regular expression to select
-# which layers to train by name pattern.
-model.train(dataset_train, dataset_val,
-            learning_rate=config.LEARNING_RATE,
-            epochs=10,
-            layers='heads')
-
-# Fine tune all layers
-# Passing layers="all" trains all layers. You can also
-# pass a regular expression to select which layers to
-# train by name pattern.
-model.train(dataset_train, dataset_val,
-            learning_rate=config.LEARNING_RATE / 10,
-            epochs=2,
-            layers="all")
-
-# Save weights
-# Typically not needed because callbacks save after every epoch
-# Uncomment to save manually
-# model_path = os.path.join(MODEL_DIR, "mask_rcnn_shapes.h5")
-# model.keras_model.save_weights(model_path)
 
 class InferenceConfig(PlacentaConfig):
     GPU_COUNT = 1
@@ -278,35 +246,46 @@ print("Loading weights from ", model_path)
 model.load_weights(model_path, by_name=True)
 
 # Test on a random image
-image_id = random.choice(dataset_val.image_ids)
-original_image, image_meta, gt_class_id, gt_bbox, gt_mask =\
-    modellib.load_image_gt(dataset_val, inference_config,
-                           image_id)
+for tests in range(0, 1):
+    image_id = random.choice(dataset_val.image_ids)
+    original_image, image_meta, gt_class_id, gt_bbox, gt_mask =\
+        modellib.load_image_gt(dataset_val, inference_config,
+                               image_id)
 
-log("original_image", original_image)
-log("image_meta", image_meta)
-log("gt_class_id", gt_class_id)
-log("gt_bbox", gt_bbox)
-log("gt_mask", gt_mask)
+    log("original_image", original_image)
+    log("image_meta", image_meta)
+    log("gt_class_id", gt_class_id)
+    log("gt_bbox", gt_bbox)
+    log("gt_mask", gt_mask)
 
-visualize.display_instances(original_image, gt_bbox, gt_mask, gt_class_id,
-                            dataset_train.class_names, figsize=(8, 8))
+    example_path = os.path.join(config.CHECKPOINT_PATH, "examples")
+    if not os.path.exists(example_path):
+        os.makedirs(example_path)
 
-results = model.detect([original_image], verbose=1)
+    gt_plt = visualize.display_instances(original_image, gt_bbox, gt_mask, gt_class_id,
+                                dataset_train.class_names, figsize=(8, 8))
+    gt_plt_path=os.path.join(config.CHECKPOINT_PATH, "examples", str(image_id)+"gt.png")
+    gt_plt.savefig(gt_plt_path, bbox_inches='tight')
 
-r = results[0]
-visualize.display_instances(original_image, r['rois'], r['masks'], r['class_ids'],
-                            dataset_val.class_names, r['scores'], ax=get_ax())
+    results = model.detect([original_image], verbose=1)
+
+    r = results[0]
+    test_plt = visualize.display_instances(original_image, r['rois'], r['masks'], r['class_ids'],
+                                dataset_val.class_names, r['scores'], ax=get_ax())
+    test_plt_path=os.path.join(config.CHECKPOINT_PATH, "examples", str(image_id)+"prediction.png")
+    test_plt.savefig(test_plt_path, bbox_inches='tight')
 
 # Compute VOC-Style mAP @ IoU=0.5
 # Running on 10 images. Increase for better accuracy.
-image_ids = np.random.choice(dataset_val.image_ids, 10)
+image_ids = np.random.choice(dataset_val.image_ids, 126)
 APs = []
+Precisions = []
+Overlaps = []
 for image_id in image_ids:
     # Load image and ground truth data
     image, image_meta, gt_class_id, gt_bbox, gt_mask =\
         modellib.load_image_gt(dataset_val, inference_config,
-                               image_id, use_mini_mask=False)
+                               image_id)
     molded_images = np.expand_dims(modellib.mold_image(image, inference_config), 0)
     # Run object detection
     results = model.detect([image], verbose=0)
@@ -316,6 +295,9 @@ for image_id in image_ids:
         utils.compute_ap(gt_bbox, gt_class_id, gt_mask,
                          r["rois"], r["class_ids"], r["scores"], r['masks'])
     APs.append(AP)
+    Precisions.append(np.mean(precisions))
+    Overlaps.append(np.mean(overlaps))
 
 print("mAP: ", np.mean(APs))
-
+print("mPrecision: ", np.mean(Precisions))
+print("mOverlap: ", np.mean(Overlaps))
